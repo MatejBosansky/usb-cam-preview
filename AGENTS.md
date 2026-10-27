@@ -34,6 +34,7 @@ public/                 the whole website (deployed as is)
   index.html, css/      UI
   faq/index.html        FAQ page; its answers are also structured data (schema.org FAQPage)
   robots.txt, sitemap.xml, llms.txt, og-image.png   for search engines, AI assistants and link previews
+  icon.svg              site icon; favicon.ico and apple-touch-icon.png are rendered from it
   js/app.js             UI wiring and state
   js/drivers.js         loads drivers and hosts the active one (the services a driver gets)
   js/filters.js         loads filters
@@ -47,6 +48,7 @@ public/                 the whole website (deployed as is)
 scripts/serve.mjs       dev server (zero dependencies)
 scripts/build.mjs       validates everything; writes the generated lists for deployment
 scripts/test.mjs        runs drivers' and filters' own test.mjs files
+scripts/icons.mjs       renders favicon.ico and apple-touch-icon.png from icon.svg (needs Chrome)
 docs/examples/          example camera reports
 docs/og-image.html      source of public/og-image.png (how to regenerate it is inside)
 ```
