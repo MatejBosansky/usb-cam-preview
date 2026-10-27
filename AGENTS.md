@@ -167,9 +167,11 @@ Start from `draftProfile` in the report and save it as `public/cameras/<id>.json
   Leave the field out when a direct connection works.
 - **`driver`**: only when an existing driver in `public/drivers/` handles this camera type, e.g.
   `{ "id": "infiray-thermal", "options": { "divisor": 64 } }` for InfiRay-style thermal cameras
-  (TOOLTOP, Topdon TC001, InfiRay P2 Pro). The draft adds it when a driver recognises the camera
-  from the test (see each driver's README for its options and checks). If no driver fits and the
-  camera needs code, write one (`public/drivers/README.md`); otherwise leave the field out.
+  (TOOLTOP, Topdon TC001, InfiRay P2 Pro); until such a camera has its own profile, the generic
+  type `generic-thermal` handles it at any sensor size. The draft adds it when a driver
+  recognises the camera from the test (see each driver's README for its options and checks). If no
+  driver fits and the camera needs code, write one (`public/drivers/README.md`); otherwise leave
+  the field out.
 - **`notes`**: facts a user benefits from, e.g. real vs advertised resolution, frame rate in low
   light, how the LED is controlled, warm-up time. Only what was observed or the human told you.
 - **`tested`**: keep the entry from the draft (date, OS, browser, result).

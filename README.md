@@ -14,7 +14,8 @@ Nothing is installed and nothing is uploaded.
 - Camera profiles: cameras are recognised by USB ID and opened with settings that suit them
 - Thermal cameras (InfiRay family: TOOLTOP T256, Topdon TC001, InfiRay P2 Pro): palettes, automatic
   or fixed color range, temperatures (center, hottest and coldest point, under the pointer, CSV
-  export) and photos with the temperatures and a legend drawn in, in Chrome and Edge
+  export) and photos with the temperatures and a legend drawn in, in Chrome, Edge and Firefox.
+  Cameras without their own profile can use the camera type "Generic thermal camera (InfiRay format)"
 - Compatibility test: measures what the connected camera really delivers and shows which
   profiles fit it, then produces a report for adding the camera to the project
 

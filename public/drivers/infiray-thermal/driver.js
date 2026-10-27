@@ -2,10 +2,10 @@
 // Their W×2H frame carries the camera's own picture over raw 16-bit temperatures (see decode.js).
 // Everything thermal lives in this folder; the app only provides the host services in ctx.
 import { PALETTES, paletteLut, temperaturesCsv } from './decode.js';
-import { ThermalPipeline } from './pipeline.js';
+import { ThermalPipeline, SENSORS } from './pipeline.js';
 
 // Sensor sizes of common thermal cameras, alone and as picture-over-temperature frames.
-const THERMAL_MODES = [[80, 60], [80, 120], [160, 120], [160, 240], [256, 192], [256, 384], [384, 288], [384, 576], [512, 384], [640, 512]];
+const THERMAL_MODES = SENSORS.flatMap(([w, h]) => [[w, h], [w, h * 2]]);
 const PALETTE_NAMES = { iron: 'Iron', rainbow: 'Rainbow', 'white-hot': 'White hot', 'black-hot': 'Black hot' };
 const DEFAULT_PREFS = { palette: 'iron', auto: true, min: 20, max: 40, extremes: true, center: true, burnIn: true };
 const SVG = 'http://www.w3.org/2000/svg';
@@ -20,7 +20,11 @@ export default {
   styles: ['style.css'],
   probeModes: THERMAL_MODES,
 
-  /** Profile options: { divisor } — °C = raw / divisor − 273.15, 64 for the cameras seen so far. */
+  /**
+   * Profile options: { divisor } — °C = raw / divisor − 273.15, 64 for the cameras seen so far.
+   * The profile's defaultMode is the W×2H mode to expect; without one (the generic profile) the
+   * W×2H frame of any known sensor size is accepted.
+   */
   validateOptions(options) {
     const errors = [];
     for (const key of Object.keys(options)) if (key !== 'divisor') errors.push(`unknown option "${key}"`);
@@ -48,6 +52,7 @@ class ThermalView {
     this.last = null; // last pipeline result
     this.fits = true; // the stream is the W×2H mode that carries temperatures
     this.seenFrame = false;
+    this.size = null; // the stream's width and height
     this.pointerInfo = null;
     this.buildPanel();
     this.buildLayers();
@@ -58,6 +63,7 @@ class ThermalView {
 
   async processFrame(video) {
     this.seenFrame = true;
+    this.size = [video.videoWidth, video.videoHeight];
     this.fits = this.pipeline.fits(video);
     if (!this.fits) {
       this.last = null;
@@ -76,7 +82,8 @@ class ThermalView {
 
   hud() {
     const res = this.last;
-    if (!this.fits || !res) return '';
+    if (this.seenFrame && !this.fits) return 'No temperature data';
+    if (!res) return '';
     if (res.status === 'warming') return 'The thermal camera is warming up…';
     if (res.status === 'no-data') return 'No temperature data';
     if (res.status !== 'ok') return '';
@@ -204,8 +211,7 @@ class ThermalView {
     const { refs: r, last: res } = this;
     let status = '';
     if (this.seenFrame && !this.fits) {
-      const m = this.ctx.profile.defaultMode;
-      status = `Temperatures need the ${m.width}×${m.height} resolution (Camera tab).`;
+      status = this.wrongSizeMessage();
     } else if (res?.status === 'warming') {
       status = 'The thermal camera is warming up…';
     } else if (res?.status === 'no-data') {
@@ -228,6 +234,16 @@ class ThermalView {
       r.min.value = ready ? res.range[0].toFixed(1) : '';
       r.max.value = ready ? res.range[1].toFixed(1) : '';
     }
+  }
+
+  wrongSizeMessage() {
+    const m = this.ctx.profile.defaultMode;
+    if (m) return `Temperatures need the ${m.width}×${m.height} resolution (Camera tab).`;
+    const [w, h] = this.size;
+    if (SENSORS.some(([sw, sh]) => sw === w && sh === h)) {
+      return `This ${w}×${h} picture holds no temperatures; they come at ${w}×${h * 2}: pick it in the Camera tab (run the compatibility test if it is not listed).`;
+    }
+    return `A ${w}×${h} picture is not an InfiRay thermal frame (such as 256×384 for a 256×192 sensor), so no temperatures are shown. Check the Camera type at the top.`;
   }
 
   // ---------- marks, legend and pointer readout ----------

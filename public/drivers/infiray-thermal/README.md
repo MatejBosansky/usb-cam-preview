@@ -19,6 +19,12 @@ camera's own 8-bit picture; the bottom half holds one little-endian uint16 per p
 centre temperature is implausible (room ≈ 20–25 °C), it is probably different. The compatibility
 test suggests this driver for a `thermal` camera that offers both W×H and W×2H.
 
+Without `defaultMode` the driver accepts the W×2H frame of any known sensor size (80×60 up to
+640×512, `SENSORS` in `pipeline.js`), and the app opens the camera at its largest resolution, which
+for these cameras is the W×2H one. `public/cameras/generic-thermal.json` ("Generic thermal camera
+(InfiRay format)") is such a profile, for cameras that have none of their own yet. A camera's own
+profile is still better: it is recognised by its USB ID and opens its measured mode.
+
 ## What it does
 
 Palettes (Iron, Rainbow, White hot, Black hot), automatic or fixed colour range with a legend, the
@@ -32,7 +38,7 @@ temperature map, and photos with all of that drawn in.
 | `driver.js` | driver definition and the user interface |
 | `pipeline.js` | frame → colourised image and temperature map |
 | `decode.js` | decoding the raw half, palettes, CSV |
-| `test.mjs` | decoder test on synthetic frames from 80×60 to 640×512, and normal camera pictures that must be rejected (`npm test`) |
+| `test.mjs` | decoder test on synthetic frames from 80×60 to 640×512, normal camera pictures that must be rejected, the accepted stream sizes and the switch to "No temperature data" (`npm test`) |
 | `style.css` | marks, legend, pointer readout |
 
 ## How the decoding works, and its limits

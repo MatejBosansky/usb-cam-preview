@@ -9,11 +9,14 @@ const SETTLE_MS = 8000;
 const NO_DATA_FRAMES = 3;
 const DATA_FRAMES = 25;
 
+/** Sensor sizes of common thermal cameras; their frames are W×2H (picture over temperatures). */
+export const SENSORS = [[80, 60], [160, 120], [256, 192], [384, 288], [512, 384], [640, 512]];
+
 export class ThermalPipeline {
-  /** spec is a profile's thermal block, mode the W×2H mode it needs. */
+  /** spec is a profile's thermal block, mode the W×2H mode it needs (none: any known sensor size). */
   constructor(spec, mode) {
     this.divisor = spec.divisor || 64;
-    this.mode = mode;
+    this.mode = mode || null;
     this.model = 'auto';
     this.rawReadable = typeof VideoFrame !== 'undefined';
     this.buf = null;
@@ -24,9 +27,11 @@ export class ThermalPipeline {
     this.rows = 0;
   }
 
-  /** True when the stream is the W×2H mode that carries temperatures. */
+  /** True when the stream is a W×2H frame that carries temperatures. */
   fits(video) {
-    return !!this.mode && video.videoWidth === this.mode.width && video.videoHeight === this.mode.height;
+    const w = video.videoWidth, h = video.videoHeight;
+    if (this.mode) return w === this.mode.width && h === this.mode.height;
+    return SENSORS.some(([sw, sh]) => sw === w && sh * 2 === h);
   }
 
   ensure(width, rows) {

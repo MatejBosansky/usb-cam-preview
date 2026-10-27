@@ -1,0 +1,11 @@
+{
+  "$schema": "./schema.json",
+  "id": "generic-thermal",
+  "name": "Generic thermal camera (InfiRay format)",
+  "kind": "thermal",
+  "generic": true,
+  "match": { "labels": ["thermal", "infiray", "topdon", "tooltop", "\\bir ?cam"] },
+  "view": { "mirror": false, "rotate": 0, "overlay": "none" },
+  "driver": { "id": "infiray-thermal", "options": { "divisor": 64 } },
+  "notes": "For thermal cameras that send the InfiRay frame: the camera's own picture over raw temperatures, twice as tall as the sensor (e.g. 256x384 for 256x192). Topdon TC001 and InfiRay P2 Pro are said to use it; tested only with a TOOLTOP T256. The camera opens at its largest resolution, which for these cameras is the one with temperatures. A camera that sends something else shows its picture with \"No temperature data\"."
+}

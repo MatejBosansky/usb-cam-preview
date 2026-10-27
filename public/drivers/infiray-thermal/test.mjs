@@ -3,7 +3,9 @@
 // Each frame is built the way a browser hands it over: an InfiRay-style W×2H YUYV frame converted
 // to NV12 or I420, with the chroma row taken from the even row (macOS) or averaged (libyuv).
 // Pictures from normal cameras at the same size must be recognised as holding no temperatures.
+// Also: which stream sizes the pipeline accepts, and how it switches to and from 'no-data'.
 import { decodeRaw16, toCelsius, checkTemperatures, frameStats } from './decode.js';
+import { ThermalPipeline, SENSORS } from './pipeline.js';
 
 const SIZES = [[80, 60], [160, 120], [256, 192], [384, 288], [512, 384], [640, 512]];
 const DIVISOR = 64;
@@ -173,6 +175,44 @@ const black = encode(new Uint16Array(256 * 192).fill(128 << 8), 256, 192, 'NV12'
 const empty = decodeRaw16(black.data, black.layout, 'NV12', 256, 384, new Uint16Array(256 * 192)).empty;
 console.log(`${empty ? 'ok  ' : 'FAIL'} black warm-up frame is reported as empty`);
 if (!empty) failed++;
+
+// Stream sizes: a profile's mode exactly; without one (the generic profile) any known sensor's W×2H.
+{
+  const video = (w, h) => ({ videoWidth: w, videoHeight: h });
+  const generic = new ThermalPipeline({}, null);
+  const specific = new ThermalPipeline({}, { width: 256, height: 384 });
+  const cases = [
+    ...SENSORS.map(([w, h]) => [generic, 'generic', w, h * 2, true]),
+    ...SENSORS.map(([w, h]) => [generic, 'generic', w, h, false]),
+    [generic, 'generic', 640, 480, false], [generic, 'generic', 1280, 720, false], [generic, 'generic', 352, 288, false],
+    [specific, '256×384', 256, 384, true], [specific, '256×384', 160, 240, false], [specific, '256×384', 256, 192, false],
+  ];
+  const wrong = cases.filter(([p, , w, h, want]) => p.fits(video(w, h)) !== want);
+  for (const [, name, w, h, want] of wrong) console.log(`FAIL ${name} pipeline ${want ? 'rejects' : 'accepts'} ${w}×${h}`);
+  console.log(`${wrong.length ? 'FAIL' : 'ok  '} stream sizes: the generic pipeline takes W×2H of ${SENSORS.length} sensor sizes and nothing else; a profile's mode is exact (${cases.length} cases)`);
+  failed += wrong.length;
+}
+
+// Switching to 'no-data': the first frame decides, then 3 frames in a row switch to it and 25 back.
+{
+  const run = (start, frames) => {
+    const p = new ThermalPipeline({}, null);
+    p.follow(start);
+    return frames.map((real) => p.follow(real));
+  };
+  const checks = [
+    ['first frame without temperatures', new ThermalPipeline({}, null).follow(false) === true],
+    ['first frame with temperatures', new ThermalPipeline({}, null).follow(true) === false],
+    ['2 stray frames change nothing', run(true, [false, false, true]).every((noData) => !noData)],
+    ['3 frames without temperatures switch', run(true, [false, false, false]).at(-1) === true],
+    ['24 real frames do not switch back', run(false, Array(24).fill(true)).at(-1) === true],
+    ['25 real frames switch back', run(false, Array(25).fill(true)).at(-1) === false],
+  ];
+  for (const [name, ok] of checks) {
+    console.log(`${ok ? 'ok  ' : 'FAIL'} no-data switching: ${name}`);
+    if (!ok) failed++;
+  }
+}
 
 if (failed) {
   console.error(`${failed} thermal decoder check(s) failed`);
