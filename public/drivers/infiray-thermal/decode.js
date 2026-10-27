@@ -108,6 +108,42 @@ export function toCelsius(raw, divisor, out) {
   return out;
 }
 
+const STEP = 2; // °C between horizontal neighbours that counts as a step
+const MAX_STEPS = 0.3; // share of neighbours a step apart that temperatures never reach
+const MIN_SPREAD = 1; // °C standard deviation; a more even scene is too flat to compare with the picture
+const MIN_CORRELATION = 0.3;
+
+/**
+ * Whether decoded temperatures are real. Any camera at the W×2H size decodes to numbers, e.g. a
+ * normal camera under the wrong camera type or scaled by the browser, but then they mean nothing.
+ * Two checks, both with wide margins on frames measured with a TOOLTOP T256, an endoscope and a
+ * microscope in Chrome and Firefox:
+ * - temperatures change smoothly: real frames had 0.01 % of neighbours 2 °C or more apart, a
+ *   normal picture decoded the same way 66–94 %;
+ * - the top half is the camera's own picture of the same temperatures, so whenever the scene
+ *   has some contrast the two correlate (0.97–0.99 measured; unrelated pictures ≈ 0).
+ * A very even scene with an unrelated picture cannot be told apart and counts as real.
+ */
+export function checkTemperatures(data, layout, width, rows, temps) {
+  const y = layout[0];
+  let steps = 0, sp = 0, st = 0, spp = 0, stt = 0, spt = 0;
+  for (let r = 0; r < rows; r++) {
+    const row = r * width, picRow = y.offset + r * y.stride;
+    for (let x = 0; x < width; x++) {
+      const t = temps[row + x], p = data[picRow + x];
+      if (x && Math.abs(t - temps[row + x - 1]) >= STEP) steps++;
+      sp += p; st += t; spp += p * p; stt += t * t; spt += p * t;
+    }
+  }
+  const n = width * rows;
+  const varP = spp / n - (sp / n) ** 2, varT = stt / n - (st / n) ** 2;
+  const stepShare = steps / (rows * (width - 1));
+  const spread = Math.sqrt(Math.max(0, varT));
+  const correlation = varP > 0 && varT > 0 ? (spt / n - (sp / n) * (st / n)) / Math.sqrt(varP * varT) : 0;
+  const real = stepShare <= MAX_STEPS && (spread < MIN_SPREAD || Math.abs(correlation) >= MIN_CORRELATION);
+  return { real, stepShare, spread, correlation };
+}
+
 export function frameStats(temps, width, height) {
   let min = Infinity, max = -Infinity, minAt = 0, maxAt = 0;
   for (let i = 0; i < temps.length; i++) {

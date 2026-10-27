@@ -64,7 +64,7 @@ class ThermalView {
       return null; // show the video as it is
     }
     this.last = await this.pipeline.process(video, this.prefs);
-    return this.last.image;
+    return this.last.image ?? null; // no image: show the video as it is
   }
 
   layout() {
@@ -78,6 +78,7 @@ class ThermalView {
     const res = this.last;
     if (!this.fits || !res) return '';
     if (res.status === 'warming') return 'The thermal camera is warming up…';
+    if (res.status === 'no-data') return 'No temperature data';
     if (res.status !== 'ok') return '';
     const center = this.centerTemp();
     const parts = [];
@@ -207,6 +208,8 @@ class ThermalView {
       status = `Temperatures need the ${m.width}×${m.height} resolution (Camera tab).`;
     } else if (res?.status === 'warming') {
       status = 'The thermal camera is warming up…';
+    } else if (res?.status === 'no-data') {
+      status = 'This camera sends no temperature data, so none are shown: its picture is not in the InfiRay thermal format. Check the Camera type at the top.';
     } else if (res?.status === 'image-only') {
       status = 'This browser does not expose the temperature data, so only the camera\'s own picture is shown. Use Chrome or Edge for temperatures.';
     } else if (res?.status === 'ok') {
@@ -220,9 +223,10 @@ class ThermalView {
     const ready = this.ready();
     r.csv.disabled = !ready;
     const editing = document.activeElement === r.min || document.activeElement === r.max;
-    if (ready && this.prefs.auto && !editing) {
-      r.min.value = res.range[0].toFixed(1);
-      r.max.value = res.range[1].toFixed(1);
+    if (this.prefs.auto && !editing) {
+      // Without temperatures there is no range to show.
+      r.min.value = ready ? res.range[0].toFixed(1) : '';
+      r.max.value = ready ? res.range[1].toFixed(1) : '';
     }
   }
 

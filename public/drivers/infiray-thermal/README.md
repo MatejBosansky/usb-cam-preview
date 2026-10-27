@@ -32,7 +32,7 @@ temperature map, and photos with all of that drawn in.
 | `driver.js` | driver definition and the user interface |
 | `pipeline.js` | frame → colourised image and temperature map |
 | `decode.js` | decoding the raw half, palettes, CSV |
-| `test.mjs` | decoder test on synthetic frames from 80×60 to 640×512 (`npm test`) |
+| `test.mjs` | decoder test on synthetic frames from 80×60 to 640×512, and normal camera pictures that must be rejected (`npm test`) |
 | `style.css` | marks, legend, pointer readout |
 
 ## How the decoding works, and its limits
@@ -41,8 +41,19 @@ Browsers hand the frame over as NV12/I420: the low byte (in Y) survives exactly,
 carries the high bytes for two pixel rows. On macOS that row comes from the even row, so even rows
 are exact and odd rows are rebuilt from their neighbours (`even-row` model). Converters that
 average the two rows (libyuv, likely on Windows and Linux) are detected and decoded per pair
-(`averaged` model); that path is covered by `test.mjs` but untested on hardware. Firefox and
-Safari may only give RGB frames: then only the camera's own picture is shown, through the palette.
+(`averaged` model); that path is covered by `test.mjs` but untested on hardware. Firefox 156 hands
+over I420 frames, so temperatures work there too. A browser that only gives RGB frames shows only
+the camera's own picture, through the palette.
+
+## Frames without temperatures
+
+Any camera at the W×2H size decodes to numbers, e.g. a normal camera given this camera type in a
+browser that scales it to that size (Safari does). `checkTemperatures` in `decode.js` rejects such
+frames: real temperatures change smoothly between neighbouring pixels, and the camera's own
+picture in the top half shows the same scene, so the two correlate. Measured with a TOOLTOP T256,
+an endoscope and a microscope in Chrome and Firefox, both checks have wide margins (see the
+comment there). The video is then shown as it is, with "No temperature data" and a hint to check
+the camera type. A very even scene cannot be told apart and counts as real.
 
 Tested: TOOLTOP T256 (USB 0bda:5840) on macOS 26 with Chrome 155. It sends black frames for about
 4 s after starting, and shifts all readings by about 5 °C some 6 s after that (presumably its own
