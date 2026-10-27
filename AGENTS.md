@@ -32,6 +32,8 @@ public/                 the whole website (deployed as is)
   drivers/<id>/         camera drivers; README.md = the driver API; _example/ to copy
   filters/<id>.js       filters; README.md = the filter API
   index.html, css/      UI
+  faq/index.html        FAQ page; its answers are also structured data (schema.org FAQPage)
+  robots.txt, sitemap.xml, llms.txt, og-image.png   for search engines, AI assistants and link previews
   js/app.js             UI wiring and state
   js/drivers.js         loads drivers and hosts the active one (the services a driver gets)
   js/filters.js         loads filters
@@ -46,6 +48,7 @@ scripts/serve.mjs       dev server (zero dependencies)
 scripts/build.mjs       validates everything; writes the generated lists for deployment
 scripts/test.mjs        runs drivers' and filters' own test.mjs files
 docs/examples/          example camera reports
+docs/og-image.html      source of public/og-image.png (how to regenerate it is inside)
 ```
 
 `cameras/index.json`, `drivers/index.json` and `filters/index.json` are **generated** (by
@@ -222,5 +225,8 @@ for a new driver should also contain the profile of at least one camera that use
 - The driver and filter APIs (`apiVersion: 1`) are a contract with code outside the core. Change
   them only compatibly; document every change in the two READMEs.
 - `npm run dev` loads the validators once: restart it after changing them.
+- The FAQ (`public/faq/index.html`), `public/llms.txt` and the description in `index.html` (meta tags,
+  JSON-LD, `<noscript>`) say what the app does. Update them when a feature, a supported camera or
+  browser support changes, and keep their claims to what was tested.
 - Test camera features in a real browser with a real camera. `npm test` covers what drivers and
   filters test themselves; `node --check` catches syntax errors.

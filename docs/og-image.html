@@ -1,0 +1,83 @@
+<!doctype html>
+<!--
+  Source of public/og-image.png, the 1200×630 picture shown when a link to the site is shared.
+  The thermal picture is synthetic (drawn with the app's Iron palette), not a photo.
+  To regenerate: open this file in Chrome with a 1200×630 viewport and take a screenshot, e.g.
+  chrome --headless=new --window-size=1200,630 --screenshot=public/og-image.png docs/og-image.html
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>USB Cam Preview link preview</title>
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #f2f2f0;
+    background: radial-gradient(900px 500px at 85% 20%, #10322f 0%, #101010 60%);
+    display: grid; grid-template-columns: 600px 1fr; align-items: center; padding: 0 64px; box-sizing: border-box;
+  }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .brand svg { width: 72px; height: 72px; }
+  h1 { font-size: 62px; line-height: 1.05; margin: 0; letter-spacing: -0.01em; }
+  .tag { font-size: 30px; line-height: 1.3; color: #d6d6d1; margin: 28px 0 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .chips span { font-size: 21px; padding: 7px 15px; border-radius: 999px; background: #232323; border: 1px solid #3a3a3a; }
+  .url { margin-top: 34px; font-size: 26px; font-weight: 600; color: #35b6ac; }
+  .viewer { justify-self: end; position: relative; width: 440px; height: 330px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgb(0 0 0 / 0.55); border: 1px solid #333; }
+  canvas { display: block; width: 440px; height: 330px; }
+  .hud { position: absolute; left: 12px; top: 10px; font: 600 17px ui-monospace, SFMono-Regular, Menlo, monospace; background: rgb(0 0 0 / 0.55); padding: 4px 9px; border-radius: 7px; }
+  .legend { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 8px; font: 600 15px ui-monospace, SFMono-Regular, Menlo, monospace; background: rgb(0 0 0 / 0.6); padding: 6px 10px; border-radius: 8px; }
+  .legend i { width: 120px; height: 10px; border-radius: 3px; }
+  .cross { position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; transform: translate(-50%, -50%); }
+  .cross::before, .cross::after { content: ""; position: absolute; background: #fff; box-shadow: 0 0 3px #000; }
+  .cross::before { left: 14px; top: 0; width: 2px; height: 30px; }
+  .cross::after { top: 14px; left: 0; height: 2px; width: 30px; }
+  .label { position: absolute; left: calc(50% + 20px); top: calc(50% - 36px); font: 600 18px ui-monospace, SFMono-Regular, Menlo, monospace; text-shadow: 0 0 4px #000, 0 0 2px #000; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="brand">
+      <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0a7c74"/><circle cx="16" cy="16" r="8.5" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="16" cy="16" r="3.2" fill="#fff"/></svg>
+      <h1>USB Cam<br>Preview</h1>
+    </div>
+    <p class="tag">USB microscopes, endoscopes, thermal cameras and webcams, right in your browser</p>
+    <div class="chips"><span>Photos &amp; video</span><span>Filters</span><span>Temperatures</span><span>Nothing to install</span></div>
+    <div class="url">usbcam.bosansky.com</div>
+  </div>
+  <div class="viewer">
+    <canvas id="c" width="440" height="330"></canvas>
+    <div class="hud">⌖ 34.6 °C · ▲ 36.9 °C · ▼ 21.4 °C</div>
+    <div class="cross"></div><div class="label">34.6 °C</div>
+    <div class="legend">21.4 °C <i id="bar"></i> 36.9 °C</div>
+  </div>
+<script>
+  // The Iron palette's colour stops, as in public/drivers/infiray-thermal/decode.js.
+  const STOPS = [[0, 0, 0], [25, 0, 85], [95, 0, 140], [170, 20, 110], [215, 60, 40], [245, 125, 0], [255, 200, 20], [255, 250, 210]];
+  const iron = (v) => {
+    const pos = Math.max(0, Math.min(1, v)) * (STOPS.length - 1);
+    const k = Math.min(STOPS.length - 2, Math.floor(pos)), f = pos - k;
+    return STOPS[k].map((c, i) => Math.round(c + (STOPS[k + 1][i] - c) * f));
+  };
+  const c = document.getElementById('c'), g = c.getContext('2d');
+  const img = g.createImageData(c.width, c.height);
+  // A warm mug with a hand-shaped blob beside it on a cool background.
+  for (let y = 0; y < c.height; y++) {
+    for (let x = 0; x < c.width; x++) {
+      const u = x / c.width, v = y / c.height;
+      let t = 0.12 + 0.1 * v + 0.04 * Math.sin(u * 7 + v * 3);
+      const d = ((u - 0.5) / 0.16) ** 2 + ((v - 0.55) / 0.24) ** 2;
+      const mug = Math.exp(-(d * d)); // flat-topped
+      const steam = Math.exp(-(((u - 0.5 - 0.05 * Math.sin(v * 18)) / 0.05) ** 2)) * Math.max(0, 0.42 - v) * 1.6;
+      const hand = Math.exp(-(((u - 0.82) / 0.12) ** 2 + ((v - 0.78) / 0.2) ** 2));
+      t = Math.max(t, 0.95 * mug, 0.55 * steam, 0.72 * hand);
+      const [r, gg, b] = iron(t);
+      const i = (y * c.width + x) * 4;
+      img.data.set([r, gg, b, 255], i);
+    }
+  }
+  g.putImageData(img, 0, 0);
+  document.getElementById('bar').style.background = `linear-gradient(to right, ${Array.from({ length: 9 }, (_, i) => `rgb(${iron(i / 8).join(' ')})`).join(', ')})`;
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # USB Cam Preview
 
-**Live: https://usbcam.bosansky.com**
+**Live: https://usbcam.bosansky.com** · [FAQ](https://usbcam.bosansky.com/faq/)
 
 A webcam, USB microscope and USB endoscope viewer that runs entirely in your browser.
 Nothing is installed and nothing is uploaded.

@@ -1,0 +1,26 @@
+# USB Cam Preview
+
+> A free web app that shows USB microscopes, endoscopes, webcams and InfiRay-format thermal cameras in the browser: live view, photos, video recording, filters and temperatures. It runs entirely in the browser; nothing is installed and the camera image is not uploaded.
+
+- App: https://usbcam.bosansky.com/
+- Works in Chrome, Edge, Firefox and Safari on computers. Chrome and Edge recognise cameras by their USB ID; in Firefox and Safari the camera type is picked by hand.
+- Any USB video class (UVC) camera works. WiFi cameras that need their own phone app do not.
+- Thermal cameras in the InfiRay frame format: tested with a TOOLTOP T256; the Topdon TC001 and InfiRay P2 Pro are said to use the same format. Palettes, temperatures, CSV export. Cameras without a profile of their own use the camera type "Generic thermal camera (InfiRay format)".
+- Phones: their own cameras work. USB cameras plugged into a phone mostly do not: a browser only gets the cameras the phone offers to apps, and iPhone does not support USB cameras.
+
+## Docs
+
+- [FAQ](https://usbcam.bosansky.com/faq/): which cameras work, what to do when a camera does not show up, thermal cameras, phones, privacy, photos and video
+- [README](https://github.com/MatejBosansky/usb-cam-preview/blob/main/README.md): features, browser support, test results, running it locally
+- [Adding a camera](https://github.com/MatejBosansky/usb-cam-preview/blob/main/CONTRIBUTING.md): how to contribute a camera that does not work well yet
+
+## For coding agents
+
+- [AGENTS.md](https://github.com/MatejBosansky/usb-cam-preview/blob/main/AGENTS.md): project layout and how to add a camera profile, a driver or a filter
+- [Driver API](https://github.com/MatejBosansky/usb-cam-preview/blob/main/public/drivers/README.md): camera types that need code
+- [Filter API](https://github.com/MatejBosansky/usb-cam-preview/blob/main/public/filters/README.md): image filters, one file each
+- [Camera profiles](https://github.com/MatejBosansky/usb-cam-preview/tree/main/public/cameras): one JSON file per camera
+
+## Optional
+
+- [Thermal camera driver](https://github.com/MatejBosansky/usb-cam-preview/blob/main/public/drivers/infiray-thermal/README.md): the InfiRay frame layout and how it is decoded

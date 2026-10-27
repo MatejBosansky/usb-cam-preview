@@ -103,6 +103,13 @@ svg use { pointer-events: none; }
 .empty h1 { font-size: 20px; font-weight: 600; margin: 0; }
 .empty p { margin: 0; color: var(--stage-muted); max-width: 460px; }
 .empty .error { color: #ff8f86; }
+.empty .empty-faq { font-size: 13px; }
+.empty a { color: inherit; }
+.panel-foot a { color: inherit; }
+
+/* Shown only without JavaScript; also what search engines that do not run scripts read. */
+.noscript { max-width: 720px; margin: 0 auto; padding: 24px 16px; line-height: 1.5; }
+.noscript a { color: var(--accent); }
 
 .flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
 .flash.on { animation: flash 0.35s ease-out; }

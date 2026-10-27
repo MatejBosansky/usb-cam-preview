@@ -3,14 +3,69 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>USB Cam Preview</title>
-  <meta name="description" content="Webcam, USB microscope and endoscope viewer with filters, photos and video recording. Runs entirely in your browser.">
+  <title>USB Cam Preview – USB microscope, endoscope and thermal camera viewer</title>
+  <meta name="description" content="View, photograph and record USB microscopes, endoscopes, webcams and InfiRay thermal cameras right in your browser. Nothing to install, nothing uploaded.">
+  <link rel="canonical" href="https://usbcam.bosansky.com/">
   <meta name="color-scheme" content="light dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="USB Cam Preview">
+  <meta property="og:url" content="https://usbcam.bosansky.com/">
+  <meta property="og:title" content="USB Cam Preview – USB microscope, endoscope and thermal camera viewer">
+  <meta property="og:description" content="Live view, photos and video from USB microscopes, endoscopes, webcams and thermal cameras, right in your browser. Nothing to install, nothing uploaded.">
+  <meta property="og:image" content="https://usbcam.bosansky.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="USB Cam Preview: a browser app showing a thermal camera picture with temperatures">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/app.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "USB Cam Preview",
+    "url": "https://usbcam.bosansky.com/",
+    "description": "A free browser app for USB microscopes, endoscopes, webcams and InfiRay-format thermal cameras: live view, photos, video recording, filters and temperatures. It runs entirely in the browser; nothing is installed and the camera image is not uploaded.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any (runs in a web browser)",
+    "browserRequirements": "Requires JavaScript and camera access. Chrome or Edge recognise cameras by their USB ID; Firefox and Safari work with the camera type picked by hand.",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+    "image": "https://usbcam.bosansky.com/og-image.png",
+    "featureList": [
+      "Live view from any USB video class (UVC) camera: webcams, USB microscopes, endoscopes and borescopes",
+      "Photos (PNG, JPEG) and video recording (MP4, WebM), optionally saved straight into a folder",
+      "Filters: black and white, sepia, negative, two-tone, false color, edge detection; brightness, contrast, saturation, gamma, hue",
+      "Rotate, mirror, zoom and pan, crosshair and grid overlays, freeze frame",
+      "Thermal cameras in the InfiRay format (TOOLTOP T256, Topdon TC001, InfiRay P2 Pro): palettes, temperatures, CSV export",
+      "Compatibility test that measures the resolutions a camera really delivers"
+    ],
+    "sameAs": ["https://github.com/MatejBosansky/usb-cam-preview"],
+    "author": { "@type": "Person", "name": "MatejBosansky", "url": "https://github.com/MatejBosansky" }
+  }
+  </script>
   <script type="module" src="js/app.js"></script>
 </head>
 <body>
+<noscript>
+  <div class="noscript">
+    <h1>USB Cam Preview</h1>
+    <p>USB Cam Preview shows USB microscopes, endoscopes, webcams and InfiRay thermal cameras (such as the
+      TOOLTOP T256) right in the browser: live view, photos, video recording, filters and, for thermal
+      cameras, temperatures. It runs entirely on your computer: nothing is installed and the camera image is
+      not uploaded anywhere.</p>
+    <p><strong>It needs JavaScript and camera access.</strong> Please turn JavaScript on to use it.</p>
+    <ul>
+      <li>Any USB video class (UVC) camera: webcams, cheap USB microscopes, endoscopes and borescopes</li>
+      <li>Photos (PNG, JPEG) and video (MP4, WebM)</li>
+      <li>Filters: black and white, sepia, negative, two-tone, false color, edge detection</li>
+      <li>Rotate, mirror, zoom, crosshair and grid overlays, freeze frame</li>
+      <li>Thermal cameras: palettes, hottest and coldest point, temperature under the pointer, CSV export</li>
+      <li>Compatibility test: which resolutions the camera really delivers</li>
+    </ul>
+    <p><a href="faq/">Frequently asked questions</a> · <a href="https://github.com/MatejBosansky/usb-cam-preview">Source code on GitHub</a></p>
+  </div>
+</noscript>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
   <symbol id="i-rot-left" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
@@ -56,10 +111,11 @@
           <span id="hudRec" class="rec" hidden></span>
         </div>
         <div class="empty" id="emptyState">
-          <h1 data-i18n="emptyTitle">Webcam, USB microscope or endoscope</h1>
+          <h1 data-i18n="emptyTitle">Webcam, USB microscope, endoscope or thermal camera</h1>
           <p data-i18n="emptyHint">Everything runs in your browser. Nothing is uploaded anywhere.</p>
           <div><button id="startBtn" class="btn primary" type="button" data-i18n="startCamera">Start camera</button></div>
           <p id="emptyError" class="error" hidden></p>
+          <p class="empty-faq"><a href="faq/" data-i18n="faqLink">Questions? Read the FAQ</a></p>
         </div>
         <div id="viewerLayer" class="layer" aria-hidden="true"></div>
         <div class="flash" id="flash"></div>
@@ -171,6 +227,7 @@
 
       <footer class="panel-foot muted small">
         <span data-i18n="privacy"></span>
+        <span><a href="faq/" data-i18n="faq">FAQ</a> · <a id="repoLink" href="https://github.com/MatejBosansky/usb-cam-preview" target="_blank" rel="noopener" data-i18n="sourceCode">Source code on GitHub</a></span>
         <span id="buildInfo" class="build-info"></span>
       </footer>
     </aside>

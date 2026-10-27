@@ -118,6 +118,7 @@ async function init() {
   E.photoFormat.value = prefs.photoFormat;
   E.applyToCaptures.checked = prefs.applyToCaptures;
   E.githubInput.value = prefs.github || '';
+  E.repoLink.href = REPO_URL;
   renderFolderStatus();
   renderAgentPrompt();
   renderGallery();
