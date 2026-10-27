@@ -63,7 +63,7 @@ svg use { pointer-events: none; }
 /* Top bar */
 .topbar { display: flex; align-items: center; gap: 16px; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: 16px; }
-.logo { width: 22px; height: 22px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+.logo { width: 28px; height: 28px; }
 .pickers { display: flex; gap: 12px; flex: 1; min-width: 0; flex-wrap: wrap; }
 .pickers .field { flex: 1 1 220px; max-width: 380px; }
 .pickers .field:last-child { flex-grow: 2; max-width: 600px; }

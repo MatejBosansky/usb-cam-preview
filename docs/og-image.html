@@ -1,7 +1,8 @@
 <!doctype html>
 <!--
   Source of public/og-image.png, the 1200×630 picture shown when a link to the site is shared.
-  The thermal picture is synthetic (drawn with the app's Iron palette), not a photo.
+  The thermal picture is synthetic (drawn with the app's Iron palette), not a photo. The icon is
+  public/apple-touch-icon.png (the site icon on its white tile; scripts/icons.mjs renders it).
   To regenerate: open this file in Chrome with a 1200×630 viewport and take a screenshot, e.g.
   chrome --headless=new --window-size=1200,630 --screenshot=public/og-image.png docs/og-image.html
 -->
@@ -16,8 +17,8 @@
     background: radial-gradient(900px 500px at 85% 20%, #10322f 0%, #101010 60%);
     display: grid; grid-template-columns: 600px 1fr; align-items: center; padding: 0 64px; box-sizing: border-box;
   }
-  .brand { display: flex; align-items: center; gap: 18px; }
-  .brand svg { width: 72px; height: 72px; }
+  .brand { display: flex; align-items: center; gap: 22px; }
+  .brand img { width: 104px; height: 104px; border-radius: 23px; }
   h1 { font-size: 62px; line-height: 1.05; margin: 0; letter-spacing: -0.01em; }
   .tag { font-size: 30px; line-height: 1.3; color: #d6d6d1; margin: 28px 0 0; }
   .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
@@ -38,7 +39,7 @@
 <body>
   <div>
     <div class="brand">
-      <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0a7c74"/><circle cx="16" cy="16" r="8.5" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="16" cy="16" r="3.2" fill="#fff"/></svg>
+      <img src="../public/apple-touch-icon.png" alt="">
       <h1>USB Cam<br>Preview</h1>
     </div>
     <p class="tag">USB microscopes, endoscopes, thermal cameras and webcams, right in your browser</p>
