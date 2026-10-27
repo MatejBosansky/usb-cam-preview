@@ -1,0 +1,16 @@
+{
+  "name": "usb-cam-preview",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Webcam, USB microscope and endoscope viewer that runs entirely in the browser.",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "test": "node scripts/test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

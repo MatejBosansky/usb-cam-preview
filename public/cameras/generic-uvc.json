@@ -1,0 +1,10 @@
+{
+  "$schema": "./schema.json",
+  "id": "generic-uvc",
+  "name": "Generic USB camera",
+  "kind": "other",
+  "generic": true,
+  "match": { "fallback": true },
+  "view": { "mirror": false, "rotate": 0, "overlay": "none" },
+  "notes": "Fallback for any camera without its own profile. The app asks for the best resolution at about 30 fps."
+}

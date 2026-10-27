@@ -1,0 +1,88 @@
+{
+  "$schema": "./schema.json",
+  "id": "logitech-c505e-046d-08e4",
+  "name": "Logitech C505e HD Webcam (046d:08e4)",
+  "kind": "webcam",
+  "match": {
+    "usb": [
+      {
+        "vendorId": "046d",
+        "productId": "08e4"
+      }
+    ],
+    "labels": [
+      "^C505e HD Webcam$"
+    ]
+  },
+  "modes": [
+    {
+      "width": 1280,
+      "height": 960,
+      "frameRate": 30
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "frameRate": 30
+    },
+    {
+      "width": 1024,
+      "height": 576,
+      "frameRate": 30
+    },
+    {
+      "width": 800,
+      "height": 600,
+      "frameRate": 30
+    },
+    {
+      "width": 640,
+      "height": 480,
+      "frameRate": 30
+    },
+    {
+      "width": 640,
+      "height": 360,
+      "frameRate": 30
+    },
+    {
+      "width": 352,
+      "height": 288,
+      "frameRate": 30
+    },
+    {
+      "width": 320,
+      "height": 240,
+      "frameRate": 30
+    },
+    {
+      "width": 176,
+      "height": 144,
+      "frameRate": 30
+    },
+    {
+      "width": 160,
+      "height": 120,
+      "frameRate": 30
+    }
+  ],
+  "defaultMode": {
+    "width": 1280,
+    "height": 960,
+    "frameRate": 30
+  },
+  "view": {
+    "mirror": true,
+    "rotate": 0,
+    "overlay": "none"
+  },
+  "notes": "Delivers up to 1280x960 at 30 fps natively; measured 26-31 fps across the tested sizes. The camera also offers widescreen sizes the compatibility test does not try (e.g. 864x480, 960x544, 1184x656). Its built-in microphone is not used by USB Cam Preview. Chrome on macOS exposes no hardware controls for it. Works plugged straight into a MacBook Air, no hub needed.",
+  "tested": [
+    {
+      "date": "2026-10-19",
+      "os": "macOS 26.6",
+      "browser": "Chrome 155",
+      "result": "works"
+    }
+  ]
+}

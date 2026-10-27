@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>USB Cam Preview</title>
+  <meta name="description" content="Webcam, USB microscope and endoscope viewer with filters, photos and video recording. Runs entirely in your browser.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="i-rot-left" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-rot-right" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-mirror" viewBox="0 0 24 24"><path d="m3 7 5 5-5 5z"/><path d="m21 7-5 5 5 5z"/><path d="M12 3v2M12 9v2M12 15v2M12 21v-2"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></symbol>
+  <symbol id="i-logo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><svg class="logo"><use href="#i-logo"/></svg><span>USB Cam Preview</span></div>
+    <div class="pickers">
+      <label class="field"><span data-i18n="device">Camera</span><select id="deviceSelect" disabled></select></label>
+      <label class="field"><span data-i18n="profile">Camera type</span><select id="profileSelect" disabled></select></label>
+    </div>
+    <div class="support">
+      <span class="support-text" data-i18n="supportText">Want to support me?</span>
+      <a class="bmc-link" href="https://buymeacoffee.com/MatejB" target="_blank" rel="noopener" data-i18n="buyCoffee">☕ Buy me a coffee</a>
+    </div>
+  </header>
+
+  <div id="phoneNotice" class="notice" role="note" hidden>
+    <p id="phoneNoticeText"></p>
+    <button id="phoneNoticeClose" class="btn small" type="button" data-i18n="gotIt">Got it</button>
+  </div>
+
+  <main class="layout">
+    <section class="stage">
+      <div class="viewer" id="viewer">
+        <div class="frame" id="frame" hidden>
+          <canvas id="view"></canvas>
+          <svg id="overlay" class="overlay" aria-hidden="true"></svg>
+          <div id="frameLayer" class="layer" aria-hidden="true"></div>
+        </div>
+        <div class="hud" id="hud" hidden>
+          <span id="hudInfo"></span>
+          <span id="hudDriver" hidden></span>
+          <span id="hudFrozen" hidden data-i18n="frozen">FROZEN</span>
+          <span id="hudRec" class="rec" hidden></span>
+        </div>
+        <div class="empty" id="emptyState">
+          <h1 data-i18n="emptyTitle">Webcam, USB microscope or endoscope</h1>
+          <p data-i18n="emptyHint">Everything runs in your browser. Nothing is uploaded anywhere.</p>
+          <div><button id="startBtn" class="btn primary" type="button" data-i18n="startCamera">Start camera</button></div>
+          <p id="emptyError" class="error" hidden></p>
+        </div>
+        <div id="viewerLayer" class="layer" aria-hidden="true"></div>
+        <div class="flash" id="flash"></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="group">
+          <button id="rotLeftBtn" class="icon-btn" type="button" data-i18n-title="rotateLeft"><svg><use href="#i-rot-left"/></svg></button>
+          <button id="rotRightBtn" class="icon-btn" type="button" data-i18n-title="rotateRight"><svg><use href="#i-rot-right"/></svg></button>
+          <button id="mirrorBtn" class="icon-btn" type="button" aria-pressed="false" data-i18n-title="mirror"><svg><use href="#i-mirror"/></svg></button>
+          <label class="zoom"><span data-i18n="zoom">Zoom</span><input id="zoomRange" type="range" min="1" max="8" step="0.1" value="1"><output id="zoomOut">1.0×</output></label>
+          <select id="overlaySelect" data-i18n-title="overlay">
+            <option value="none" data-i18n="overlayNone">No overlay</option>
+            <option value="crosshair" data-i18n="overlayCrosshair">Crosshair</option>
+            <option value="grid" data-i18n="overlayGrid">Grid</option>
+          </select>
+        </div>
+        <div class="group center">
+          <button id="photoBtn" class="shutter" type="button" disabled data-i18n-title="photo"><svg><use href="#i-camera"/></svg></button>
+          <button id="recBtn" class="rec-btn" type="button" disabled data-i18n-title="record"><span class="dot"></span></button>
+        </div>
+        <div class="group end">
+          <button id="freezeBtn" class="icon-btn" type="button" aria-pressed="false" data-i18n-title="freeze"><svg><use href="#i-pause"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="image" aria-selected="true"><span data-i18n="tabImage">Image</span></button>
+        <button type="button" role="tab" data-tab="camera" aria-selected="false"><span data-i18n="tabCamera">Camera</span></button>
+        <button type="button" role="tab" data-tab="gallery" aria-selected="false"><span data-i18n="tabGallery">Gallery</span> <span id="galleryCount" class="count" hidden>0</span></button>
+        <button type="button" role="tab" data-tab="lab" aria-selected="false"><span data-i18n="tabLab">Compatibility</span></button>
+      </div>
+
+      <section class="tabpanel" id="tab-image" role="tabpanel">
+        <div id="driverPanel" hidden></div>
+        <h3 id="imageHeading" data-i18n="imageTitle" hidden>Image</h3>
+        <label class="field block"><span data-i18n="filter">Filter</span><select id="filterSelect"></select></label>
+        <p id="filterDescription" class="muted small" hidden></p>
+        <div id="filterParams"></div>
+        <div id="imageSliders"></div>
+        <p class="muted small hint-mouse" data-i18n="sliderHint"></p>
+        <p class="muted small hint-touch" data-i18n="sliderHintTouch"></p>
+        <label class="check"><input type="checkbox" id="applyToCaptures" checked><span data-i18n="applyToCaptures"></span></label>
+        <button id="resetImageBtn" class="btn small" type="button" data-i18n="resetImage">Reset image</button>
+      </section>
+
+      <section class="tabpanel" id="tab-camera" role="tabpanel" hidden>
+        <label class="field block"><span data-i18n="resolution">Resolution</span><select id="modeSelect"></select></label>
+        <h3 data-i18n="streamTitle">Current stream</h3>
+        <dl class="info" id="streamInfo"></dl>
+        <p id="profileNotes" class="note" hidden></p>
+        <h3 data-i18n="controls">Camera controls</h3>
+        <div id="controls"></div>
+        <p class="muted small" data-i18n="controlsHint"></p>
+        <button id="resetControlsBtn" class="btn small" type="button" data-i18n="resetControls" hidden></button>
+      </section>
+
+      <section class="tabpanel" id="tab-gallery" role="tabpanel" hidden>
+        <div class="row">
+          <label class="field"><span data-i18n="photoFormat">Photo format</span>
+            <select id="photoFormat"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select>
+          </label>
+          <button id="folderBtn" class="btn small" type="button"><svg><use href="#i-folder"/></svg><span data-i18n="chooseFolder"></span></button>
+        </div>
+        <p id="folderStatus" class="muted small"></p>
+        <button id="downloadAllBtn" class="btn small" type="button" hidden data-i18n="downloadAll"></button>
+        <ul class="gallery" id="galleryList"></ul>
+        <p id="galleryEmpty" class="muted" data-i18n="galleryEmpty"></p>
+      </section>
+
+      <section class="tabpanel" id="tab-lab" role="tabpanel" hidden>
+        <p id="detectedInfo" class="note" hidden></p>
+
+        <h3 data-i18n="labTitle">Compatibility test</h3>
+        <p class="muted small" data-i18n="labIntro"></p>
+        <button id="runTestBtn" class="btn primary" type="button" disabled data-i18n="runTest">Run test</button>
+        <p id="testStatus" class="muted small" aria-live="polite"></p>
+        <div id="testResults"></div>
+
+        <h3 data-i18n="buttonTitle"></h3>
+        <p class="muted small" data-i18n="buttonIntro"></p>
+        <button id="detectBtn" class="btn small" type="button" data-i18n="detect"></button>
+        <p id="buttonStatus" class="small" aria-live="polite"></p>
+
+        <h3 data-i18n="contribTitle"></h3>
+        <p class="muted small" data-i18n="contribIntro"></p>
+        <label class="field block"><span data-i18n="kind"></span><select id="kindSelect"></select></label>
+        <label class="check"><input type="checkbox" id="needsHubInput"><span data-i18n="needsHub"></span></label>
+        <label class="field block"><span data-i18n="notes"></span><textarea id="notesInput" rows="2" data-i18n-placeholder="notesPlaceholder"></textarea></label>
+        <label class="field block"><span data-i18n="github"></span><input id="githubInput" type="text" autocomplete="off" spellcheck="false"></label>
+        <div class="row">
+          <button id="downloadReportBtn" class="btn" type="button" disabled data-i18n="downloadReport"></button>
+          <button id="copyReportBtn" class="btn" type="button" disabled data-i18n="copyReport"></button>
+        </div>
+        <h4 data-i18n="agentPrompt"></h4>
+        <pre id="agentPrompt" class="prompt"></pre>
+        <div class="row">
+          <button id="copyPromptBtn" class="btn small" type="button" data-i18n="copyPrompt"></button>
+          <a id="issueLink" class="btn small" target="_blank" rel="noopener" data-i18n="openIssue"></a>
+        </div>
+
+        <h3 data-i18n="localTitle"></h3>
+        <p class="muted small" data-i18n="localIntro"></p>
+        <label class="btn small"><input id="profileFile" type="file" accept="application/json,.json" hidden><span data-i18n="loadProfile"></span></label>
+        <ul id="localList" class="local-list"></ul>
+      </section>
+
+      <footer class="panel-foot muted small">
+        <span data-i18n="privacy"></span>
+        <span id="buildInfo" class="build-info"></span>
+      </footer>
+    </aside>
+  </main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<video id="video" class="source-video" muted playsinline></video>
+</body>
+</html>

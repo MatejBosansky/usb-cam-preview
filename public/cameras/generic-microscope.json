@@ -1,0 +1,10 @@
+{
+  "$schema": "./schema.json",
+  "id": "generic-microscope",
+  "name": "Generic USB microscope",
+  "kind": "microscope",
+  "generic": true,
+  "match": { "labels": ["microscope", "digital ?viewer", "dino-?lite", "andonstar", "tomlov", "elikliv", "jiusion"] },
+  "view": { "mirror": false, "rotate": 0, "overlay": "crosshair" },
+  "notes": "Cheap USB microscopes often advertise 2-5 MP but deliver less; run the compatibility test to see real resolutions. Many drop to a few fps at their largest size."
+}

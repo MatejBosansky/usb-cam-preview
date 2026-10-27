@@ -1,0 +1,50 @@
+{
+  "$schema": "./schema.json",
+  "id": "endoscope-0bda-5806",
+  "name": "USB endoscope (Realtek 0bda:5806)",
+  "kind": "endoscope",
+  "match": {
+    "usb": [
+      {
+        "vendorId": "0bda",
+        "productId": "5806"
+      }
+    ]
+  },
+  "modes": [
+    {
+      "width": 640,
+      "height": 480,
+      "frameRate": 30
+    },
+    {
+      "width": 352,
+      "height": 288,
+      "frameRate": 30
+    },
+    {
+      "width": 320,
+      "height": 240,
+      "frameRate": 30
+    }
+  ],
+  "defaultMode": {
+    "width": 640,
+    "height": 480,
+    "frameRate": 30
+  },
+  "view": {
+    "mirror": false,
+    "rotate": 0,
+    "overlay": "none"
+  },
+  "notes": "Generic USB 2.0 endoscope on a Realtek chip; the device calls itself \"Generic USB Camera\". The sensor delivers at most 640x480 natively (also 352x288 and 320x240), always reported as 30 fps; in dim light auto exposure brings the real rate down to about 10 fps. Chrome on macOS exposes no hardware controls for it, so use the image sliders.",
+  "tested": [
+    {
+      "date": "2026-10-18",
+      "os": "macOS 26.6",
+      "browser": "Chrome 155",
+      "result": "works"
+    }
+  ]
+}

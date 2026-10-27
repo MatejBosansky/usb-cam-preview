@@ -1,0 +1,49 @@
+name: New camera
+description: Ask for support for a webcam, USB microscope, endoscope or other USB camera
+title: "Camera: "
+labels: ["camera"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! In USB Cam Preview open **Compatibility → Run test**, choose what the camera is and click
+        **Download report**. Chrome or Edge give the most complete report. Attach the file below.
+  - type: input
+    id: name
+    attributes:
+      label: Camera
+      description: Brand / model, or where you bought it
+      placeholder: e.g. 8 mm USB endoscope from AliExpress
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is it?
+      options:
+        - Microscope
+        - Endoscope / borescope
+        - Thermal camera
+        - Webcam
+        - Document camera
+        - Something else
+    validations:
+      required: true
+  - type: checkboxes
+    id: connection
+    attributes:
+      label: Connection
+      options:
+        - label: It only works through a USB hub (it does not connect when plugged straight into the computer)
+  - type: textarea
+    id: report
+    attributes:
+      label: Camera report
+      description: Drag the camera-report-….json file here (or paste its content).
+    validations:
+      required: true
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: What works and what does not?
+      placeholder: e.g. Image works, but the photo button does nothing. Box says 1080p.

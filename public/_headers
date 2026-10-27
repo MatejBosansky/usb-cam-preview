@@ -1,0 +1,10 @@
+/*
+  Permissions-Policy: camera=(self), microphone=(), geolocation=()
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+
+/cameras/*
+  Cache-Control: no-cache
+
+/build.json
+  Cache-Control: no-cache

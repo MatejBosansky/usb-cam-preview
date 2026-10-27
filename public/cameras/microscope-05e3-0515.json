@@ -1,0 +1,60 @@
+{
+  "$schema": "./schema.json",
+  "id": "microscope-05e3-0515",
+  "name": "USB microscope (Genesys Logic 05e3:0515)",
+  "kind": "microscope",
+  "match": {
+    "usb": [
+      {
+        "vendorId": "05e3",
+        "productId": "0515"
+      }
+    ]
+  },
+  "modes": [
+    {
+      "width": 640,
+      "height": 480,
+      "frameRate": 25
+    },
+    {
+      "width": 352,
+      "height": 288,
+      "frameRate": 25
+    },
+    {
+      "width": 320,
+      "height": 240,
+      "frameRate": 25
+    },
+    {
+      "width": 176,
+      "height": 144,
+      "frameRate": 25
+    },
+    {
+      "width": 160,
+      "height": 120,
+      "frameRate": 25
+    }
+  ],
+  "defaultMode": {
+    "width": 640,
+    "height": 480,
+    "frameRate": 25
+  },
+  "view": {
+    "mirror": false,
+    "rotate": 0,
+    "overlay": "crosshair"
+  },
+  "notes": "Reports itself as \"USB2.0 UVC PC Camera\" on a Genesys Logic chip; that chip maker's USB ID may also turn up in other cheap cameras. Delivers at most 640x480 natively (also 352x288, 320x240, 176x144, 160x120), reported as 25 fps; measured about 16-17 fps indoors. The device has only UVC interfaces and no keyboard (HID) interface, so a hardware photo button cannot reach the browser. Chrome on macOS exposes no hardware controls for it, so use the image sliders. Works plugged straight into a MacBook Air, no hub needed.",
+  "tested": [
+    {
+      "date": "2026-10-19",
+      "os": "macOS 26.6",
+      "browser": "Chrome 155",
+      "result": "works"
+    }
+  ]
+}

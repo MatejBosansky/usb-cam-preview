@@ -1,0 +1,58 @@
+{
+  "$schema": "./schema.json",
+  "id": "thermal-0bda-5840",
+  "name": "TOOLTOP T256 thermal camera (0bda:5840)",
+  "aliases": [
+    "InfiRay"
+  ],
+  "kind": "thermal",
+  "match": {
+    "usb": [
+      {
+        "vendorId": "0bda",
+        "productId": "5840"
+      }
+    ]
+  },
+  "modes": [
+    {
+      "width": 256,
+      "height": 384,
+      "frameRate": 25
+    },
+    {
+      "width": 256,
+      "height": 192,
+      "frameRate": 25
+    }
+  ],
+  "defaultMode": {
+    "width": 256,
+    "height": 384,
+    "frameRate": 25
+  },
+  "view": {
+    "mirror": false,
+    "rotate": 0,
+    "overlay": "none"
+  },
+  "driver": {
+    "id": "infiray-thermal",
+    "options": {
+      "divisor": 64
+    }
+  },
+  "connection": {
+    "needsHub": true,
+    "notes": "Plugged straight into a MacBook Air USB-C port it fails to enumerate (USB transaction errors, \"persistent enumeration failures\"); works through a USB 2.0 hub."
+  },
+  "notes": "Sold as TOOLTOP T256. Reports itself as \"Generic USB Camera\" (Realtek chip). 256x384 carries the camera's own picture over raw temperatures; 256x192 is the picture only. Sends black frames for about 4 s after it starts streaming. About 6 s after the stream starts, all readings drop by roughly 5 °C at once (seen on every start), presumably the camera calibrating itself; they are stable after that.",
+  "tested": [
+    {
+      "date": "2026-10-18",
+      "os": "macOS 26.6",
+      "browser": "Chrome 155",
+      "result": "works"
+    }
+  ]
+}

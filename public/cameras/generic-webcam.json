@@ -1,0 +1,10 @@
+{
+  "$schema": "./schema.json",
+  "id": "generic-webcam",
+  "name": "Built-in or desk webcam",
+  "kind": "webcam",
+  "generic": true,
+  "match": { "labels": ["facetime", "built-?in", "integrated", "macbook", "imac", "^logi", "hd pro webcam", "brio"] },
+  "view": { "mirror": true, "rotate": 0, "overlay": "none" },
+  "notes": "Laptop and desk webcams pointed at a person. The preview is mirrored like a mirror."
+}

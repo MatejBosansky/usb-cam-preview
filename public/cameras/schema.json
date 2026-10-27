@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "USB Cam Preview camera profile",
+  "description": "Describes one kind of camera so USB Cam Preview can recognise it and open it with the right settings. One file per camera in public/cameras/, named <id>.json.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "kind",
+    "match"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Kebab-case id. Must equal the file name without .json. Convention: <brand-or-kind>-<vendorId>-<productId>, e.g. endoscope-0bda-5806."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Human readable name shown in the app."
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Other names the same camera is sold under, or the maker of the module inside it (e.g. \"InfiRay\"). Shown next to the name in the app so people with a rebranded camera find it."
+    },
+    "kind": {
+      "enum": [
+        "webcam",
+        "endoscope",
+        "microscope",
+        "thermal",
+        "document-camera",
+        "other"
+      ],
+      "description": "What the camera is. Used for defaults and wording in the app."
+    },
+    "generic": {
+      "type": "boolean",
+      "description": "true for fallback profiles that are matched by name keywords instead of a specific device. Contributors normally never add generic profiles."
+    },
+    "match": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How the app recognises the camera. A USB ID match always wins over a name match.",
+      "properties": {
+        "usb": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "vendorId",
+              "productId"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "vendorId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{4}$",
+                "description": "4 lowercase hex digits."
+              },
+              "productId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{4}$",
+                "description": "4 lowercase hex digits."
+              }
+            }
+          }
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Case-insensitive regular expressions tested against the device name (without the \"(vid:pid)\" suffix Chrome adds). Only add them when the name is distinctive."
+        },
+        "fallback": {
+          "type": "boolean",
+          "description": "Matches any camera. Only for the generic-uvc profile."
+        }
+      }
+    },
+    "modes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mode"
+      },
+      "description": "Native modes the camera really delivers, measured with the compatibility test. Never copy numbers from the box."
+    },
+    "defaultMode": {
+      "$ref": "#/$defs/mode",
+      "description": "Mode the app opens the camera with. Must be one of modes."
+    },
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mirror": {
+          "type": "boolean",
+          "description": "Mirror the image horizontally by default (true for selfie webcams)."
+        },
+        "rotate": {
+          "enum": [
+            0,
+            90,
+            180,
+            270
+          ],
+          "description": "Default clockwise rotation in degrees."
+        },
+        "overlay": {
+          "enum": [
+            "none",
+            "crosshair",
+            "grid"
+          ],
+          "description": "Default overlay drawn over the image."
+        }
+      }
+    },
+    "controls": {
+      "type": "object",
+      "description": "Default hardware control values applied when the browser exposes them, e.g. {\"sharpness\": 3}. Keys are MediaTrack constraint names.",
+      "additionalProperties": {
+        "type": [
+          "number",
+          "string",
+          "boolean"
+        ]
+      }
+    },
+    "button": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "none",
+            "keyboard",
+            "unknown"
+          ],
+          "description": "none: no photo button. keyboard: the button sends a key press. unknown: has a button the browser cannot see, or not tested."
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "KeyboardEvent.code (or .key) values the button sends."
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "driver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "description": "For camera types that need code, not just settings: the driver (a folder in public/drivers/) that handles this camera, and its options. See public/drivers/README.md.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "Folder name in public/drivers/, e.g. \"infiray-thermal\"."
+        },
+        "options": {
+          "type": "object",
+          "description": "Driver-specific settings; each driver documents and validates its own (e.g. infiray-thermal: { \"divisor\": 64 })."
+        }
+      }
+    },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How the camera has to be plugged in.",
+      "properties": {
+        "needsHub": {
+          "type": "boolean",
+          "description": "true when the camera only connected through a USB hub (ideally a powered one), not plugged straight into the computer."
+        },
+        "notes": {
+          "type": "string",
+          "description": "What was tried, e.g. which computer and port failed and which hub worked."
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Quirks worth knowing: real vs advertised resolution, LED control, cable length, etc."
+    },
+    "tested": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "os",
+          "browser",
+          "result"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "os": {
+            "type": "string"
+          },
+          "browser": {
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "works",
+              "partial",
+              "broken"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "contributors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "GitHub usernames."
+    }
+  },
+  "$defs": {
+    "mode": {
+      "type": "object",
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "frameRate": {
+          "type": "number",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "./schema.json",
+  "id": "generic-phone-front",
+  "name": "Phone or tablet front camera",
+  "kind": "webcam",
+  "generic": true,
+  "match": {
+    "labels": [
+      "facing front",
+      "^front camera$"
+    ]
+  },
+  "view": {
+    "mirror": true,
+    "rotate": 0,
+    "overlay": "none"
+  },
+  "notes": "The selfie camera of a phone or tablet, mirrored like a mirror."
+}

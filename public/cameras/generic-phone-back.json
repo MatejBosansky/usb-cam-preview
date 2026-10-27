@@ -1,0 +1,19 @@
+{
+  "$schema": "./schema.json",
+  "id": "generic-phone-back",
+  "name": "Phone or tablet back camera",
+  "kind": "other",
+  "generic": true,
+  "match": {
+    "labels": [
+      "facing back",
+      "^back( [a-z]+)* camera$"
+    ]
+  },
+  "view": {
+    "mirror": false,
+    "rotate": 0,
+    "overlay": "none"
+  },
+  "notes": "A back camera of a phone or tablet. Phones open their largest picture (e.g. 4000×3000); videos are recorded at up to 1920×1080."
+}

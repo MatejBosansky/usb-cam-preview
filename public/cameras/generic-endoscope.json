@@ -1,0 +1,10 @@
+{
+  "$schema": "./schema.json",
+  "id": "generic-endoscope",
+  "name": "Generic USB endoscope",
+  "kind": "endoscope",
+  "generic": true,
+  "match": { "labels": ["endoscope", "borescope", "inspection", "snake ?cam"] },
+  "view": { "mirror": false, "rotate": 0, "overlay": "none" },
+  "notes": "Inspection cameras on a cable. Use the rotate buttons when the cable twists the image."
+}

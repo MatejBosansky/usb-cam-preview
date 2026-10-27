@@ -1,0 +1,211 @@
+{
+  "reportVersion": 1,
+  "app": "USB Cam Preview 0.1.0",
+  "createdAt": "2026-10-18T20:54:18.281Z",
+  "environment": {
+    "os": "macOS 26.6",
+    "browser": "Chrome 155",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+  },
+  "device": {
+    "label": "USB Camera (0bda:5840)",
+    "name": "USB Camera",
+    "usb": {
+      "vendorId": "0bda",
+      "productId": "5840"
+    }
+  },
+  "defaultSettings": {
+    "aspectRatio": 0.6666666666666666,
+    "frameRate": 25,
+    "height": 384,
+    "resizeMode": "none",
+    "width": 256
+  },
+  "capabilities": {
+    "aspectRatio": {
+      "max": 256,
+      "min": 0.0026041666666666665
+    },
+    "facingMode": [],
+    "frameRate": {
+      "max": 25,
+      "min": 0
+    },
+    "height": {
+      "max": 384,
+      "min": 1
+    },
+    "resizeMode": [
+      "none",
+      "crop-and-scale"
+    ],
+    "width": {
+      "max": 256,
+      "min": 1
+    }
+  },
+  "modes": [
+    {
+      "width": 80,
+      "height": 60,
+      "ok": true,
+      "native": false,
+      "frameRate": 25,
+      "maxFrameRate": 25
+    },
+    {
+      "width": 80,
+      "height": 120,
+      "ok": true,
+      "native": false,
+      "frameRate": 25,
+      "maxFrameRate": 25
+    },
+    {
+      "width": 160,
+      "height": 120,
+      "ok": true,
+      "native": false,
+      "frameRate": 25,
+      "maxFrameRate": 25
+    },
+    {
+      "width": 128,
+      "height": 192,
+      "ok": true,
+      "native": false,
+      "frameRate": 25,
+      "maxFrameRate": 25
+    },
+    {
+      "width": 176,
+      "height": 144,
+      "ok": true,
+      "native": false,
+      "frameRate": 25,
+      "maxFrameRate": 25
+    },
+    {
+      "width": 160,
+      "height": 240,
+      "ok": true,
+      "native": false,
+      "frameRate": 25,
+      "maxFrameRate": 25
+    },
+    {
+      "width": 256,
+      "height": 192,
+      "ok": true,
+      "native": true,
+      "frameRate": 25,
+      "maxFrameRate": 25,
+      "measuredFps": 24.5,
+      "meanLuma": 0
+    },
+    {
+      "width": 256,
+      "height": 384,
+      "ok": true,
+      "native": true,
+      "frameRate": 25,
+      "maxFrameRate": 25,
+      "measuredFps": 25,
+      "meanLuma": 84
+    }
+  ],
+  "button": {
+    "type": "not tested"
+  },
+  "connection": {
+    "needsHub": true
+  },
+  "libraryMatches": [
+    {
+      "id": "generic-uvc",
+      "status": "compatible",
+      "best": true,
+      "identity": "fallback"
+    },
+    {
+      "id": "generic-webcam",
+      "status": "compatible",
+      "best": false,
+      "identity": "none"
+    },
+    {
+      "id": "generic-endoscope",
+      "status": "compatible",
+      "best": false,
+      "identity": "none"
+    },
+    {
+      "id": "generic-microscope",
+      "status": "compatible",
+      "best": false,
+      "identity": "none"
+    },
+    {
+      "id": "endoscope-0bda-5806",
+      "status": "incompatible",
+      "best": false,
+      "identity": "none"
+    }
+  ],
+  "draftProfile": {
+    "$schema": "./schema.json",
+    "id": "thermal-0bda-5840",
+    "name": "Thermal camera (0bda:5840)",
+    "kind": "thermal",
+    "match": {
+      "usb": [
+        {
+          "vendorId": "0bda",
+          "productId": "5840"
+        }
+      ]
+    },
+    "modes": [
+      {
+        "width": 256,
+        "height": 384,
+        "frameRate": 25
+      },
+      {
+        "width": 256,
+        "height": 192,
+        "frameRate": 25
+      }
+    ],
+    "defaultMode": {
+      "width": 256,
+      "height": 384,
+      "frameRate": 25
+    },
+    "view": {
+      "mirror": false,
+      "rotate": 0,
+      "overlay": "none"
+    },
+    "driver": {
+      "id": "infiray-thermal",
+      "options": {
+        "divisor": 64
+      }
+    },
+    "connection": {
+      "needsHub": true,
+      "notes": "Did not connect when plugged straight into the computer (macOS 26.6); works through a USB hub."
+    },
+    "notes": "Sold as TOOLTOP T256. Reports itself as \"Generic USB Camera\" (Realtek chip). 256x384 carries the camera's own picture over raw temperatures; 256x192 is the picture only. Sends black frames for about 4 s after it starts streaming.",
+    "tested": [
+      {
+        "date": "2026-10-18",
+        "os": "macOS 26.6",
+        "browser": "Chrome 155",
+        "result": "works"
+      }
+    ]
+  }
+}

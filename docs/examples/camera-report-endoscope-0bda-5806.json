@@ -1,0 +1,183 @@
+{
+  "reportVersion": 1,
+  "app": "USB Cam Preview 0.1.0",
+  "createdAt": "2026-10-18T20:06:39.606Z",
+  "environment": {
+    "os": "macOS 26.6",
+    "browser": "Chrome 155",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+  },
+  "device": {
+    "label": "USB Camera (0bda:5806)",
+    "name": "USB Camera",
+    "usb": {
+      "vendorId": "0bda",
+      "productId": "5806"
+    }
+  },
+  "defaultSettings": {
+    "aspectRatio": 1.3333333333333333,
+    "frameRate": 30.000030517578125,
+    "height": 480,
+    "resizeMode": "none",
+    "width": 640
+  },
+  "capabilities": {
+    "aspectRatio": {
+      "max": 640,
+      "min": 0.0020833333333333333
+    },
+    "facingMode": [],
+    "frameRate": {
+      "max": 30.000030517578125,
+      "min": 0
+    },
+    "height": {
+      "max": 480,
+      "min": 1
+    },
+    "resizeMode": [
+      "none",
+      "crop-and-scale"
+    ],
+    "width": {
+      "max": 640,
+      "min": 1
+    }
+  },
+  "modes": [
+    {
+      "width": 160,
+      "height": 120,
+      "ok": true,
+      "native": false,
+      "frameRate": 30,
+      "maxFrameRate": 30
+    },
+    {
+      "width": 176,
+      "height": 144,
+      "ok": true,
+      "native": false,
+      "frameRate": 30,
+      "maxFrameRate": 30
+    },
+    {
+      "width": 320,
+      "height": 240,
+      "ok": true,
+      "native": true,
+      "frameRate": 30,
+      "maxFrameRate": 30,
+      "measuredFps": 10,
+      "meanLuma": 127
+    },
+    {
+      "width": 352,
+      "height": 288,
+      "ok": true,
+      "native": true,
+      "frameRate": 30,
+      "maxFrameRate": 30,
+      "measuredFps": 10.2,
+      "meanLuma": 128
+    },
+    {
+      "width": 640,
+      "height": 360,
+      "ok": true,
+      "native": false,
+      "frameRate": 30,
+      "maxFrameRate": 30
+    },
+    {
+      "width": 640,
+      "height": 480,
+      "ok": true,
+      "native": true,
+      "frameRate": 30,
+      "maxFrameRate": 30,
+      "measuredFps": 9.6,
+      "meanLuma": 127
+    }
+  ],
+  "button": {
+    "type": "not tested"
+  },
+  "libraryMatches": [
+    {
+      "id": "generic-uvc",
+      "status": "compatible",
+      "best": true,
+      "identity": "fallback"
+    },
+    {
+      "id": "generic-webcam",
+      "status": "compatible",
+      "best": false,
+      "identity": "none"
+    },
+    {
+      "id": "generic-endoscope",
+      "status": "compatible",
+      "best": false,
+      "identity": "none"
+    },
+    {
+      "id": "generic-microscope",
+      "status": "compatible",
+      "best": false,
+      "identity": "none"
+    }
+  ],
+  "draftProfile": {
+    "$schema": "./schema.json",
+    "id": "endoscope-0bda-5806",
+    "name": "USB endoscope (0bda:5806)",
+    "kind": "endoscope",
+    "match": {
+      "usb": [
+        {
+          "vendorId": "0bda",
+          "productId": "5806"
+        }
+      ]
+    },
+    "modes": [
+      {
+        "width": 640,
+        "height": 480,
+        "frameRate": 30
+      },
+      {
+        "width": 352,
+        "height": 288,
+        "frameRate": 30
+      },
+      {
+        "width": 320,
+        "height": 240,
+        "frameRate": 30
+      }
+    ],
+    "defaultMode": {
+      "width": 640,
+      "height": 480,
+      "frameRate": 30
+    },
+    "view": {
+      "mirror": false,
+      "rotate": 0,
+      "overlay": "none"
+    },
+    "notes": "Generic USB 2.0 endoscope on a Realtek chip; the device calls itself \"Generic USB Camera\". The sensor delivers at most 640x480 natively (also 352x288 and 320x240), always reported as 30 fps; in dim light auto exposure brings the real rate down to about 10 fps. Chrome on macOS exposes no hardware controls for it, so use the image sliders.",
+    "tested": [
+      {
+        "date": "2026-10-18",
+        "os": "macOS 26.6",
+        "browser": "Chrome 155",
+        "result": "works"
+      }
+    ]
+  }
+}
